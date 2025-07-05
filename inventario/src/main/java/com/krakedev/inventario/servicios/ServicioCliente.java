@@ -1,13 +1,14 @@
 package com.krakedev.inventario.servicios;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -15,6 +16,7 @@ import javax.ws.rs.core.Response;
 import com.kradev.persistencia.ClientesBDD;
 import com.krakedev.excepciones.KrakeDevException;
 import com.krakedev.inventario.entidades.Cliente;
+import com.krakedev.utils.ConexionBDD;
 
 @Path("clientes")
 public class ServicioCliente {
@@ -104,6 +106,23 @@ public class ServicioCliente {
 			e.printStackTrace();
 			return Response.serverError().entity("Error al buscar clientes").build();
 		}
+	}
+	@Path("probarConexion")
+	@GET
+	@Produces(MediaType.TEXT_PLAIN)
+	public String probarConexion() {
+	    try {
+	        Connection con = ConexionBDD.obtenerConexion();
+	        if (con != null && !con.isClosed()) {
+	            con.close();
+	            return "Conexión exitosa a la base de datos.";
+	        } else {
+	            return "No se pudo establecer conexión.";
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return "Error al conectar: " + e.getMessage();
+	    }
 	}
 
 }
